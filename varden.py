@@ -9,17 +9,38 @@ user_pw = pd.read_csv("username_password.csv", dtype={'password': 'object'})
 all_data = [hirers, freelancers, tasks, user_pw]
 
 
-task_type_dict = {"household services": ("laundry", "sweeping", "mopping", "cooking", "plumbing", "clogs & chokes", "installation", "appliances repair", "leaks & tweaks", "air conditioner repair", "carpentry",
-"electrical", "ironing", "packing", "transporting", "vacuuming", "gardening", "child care", "car washing", "window cleaning", "dusting", "grocery shopping", "walk the dog", "elderly care",
-"sliding door repair", "furniture assembling", "replace door knob", "wall painting", "replace light fittings", "install heater", "delivery", "install basin", "replacing leaking pipe"),
+task_type_dict = {
+    "household services": (
+        "laundry", "sweeping", "mopping", "cooking",
+        "plumbing", "clogs & chokes", "installation", "appliances repair",
+        "leaks & tweaks", "air conditioner repair", "carpentry", "electrical",
+        "ironing", "packing", "transporting", "vacuuming",
+        "gardening", "child care", "car washing", "window cleaning",
+        "dusting", "grocery shopping", "walk the dog", "elderly care",
+        "sliding door repair", "furniture assembling", "replace door knob", "wall painting",
+        "replace light fittings", "install heater", "delivery", "install basin",
+        "replacing leaking pipe"
+    ),
 
-"business admin": ("excel", "powerpoint", "word", "onenote", "filing", "minutes taking", "scanning", "printing", "data entry", "public relation", "bookkeeping", "faxing", "email",
-"inventory managment", "customer relation", "copywriting", "appointment setting", "answering telephones", "legal"),
+    "business admin": (
+        "excel", "powerpoint", "word", "onenote",
+        "filing", "minutes taking", "scanning", "printing",
+        "data entry", "public relation", "bookkeeping", "faxing",
+        "email", "inventory managment", "customer relation", "copywriting",
+        "appointment setting", "answering telephones", "legal"
+    ),
 
-"photography, design & editing":
-("premiere pro", "after effects", "final cut pro", "imovie", "photoshop", "lightroom", "indesign", "illustrator", "canva", "UI", "UX", "wedding", "portrait", "branding", "packaging",
-"studio design", "animation", "events", "creative", "artistic", "colour", "aesthetic", "minimalistic", "typography", "logo", "commercial", "corporate training video", "music video",
-"feature film", "television program", "song production")}
+    "photography, design & editing": (
+        "premiere pro", "after effects", "final cut pro", "imovie",
+        "photoshop", "lightroom", "indesign", "illustrator",
+        "canva", "UI", "UX", "wedding",
+        "portrait", "branding", "packaging", "studio design",
+        "animation", "events", "creative", "artistic",
+        "colour", "aesthetic", "minimalistic", "typography",
+        "logo", "commercial", "corporate training video", "music video",
+        "feature film", "television program", "song production"
+    )
+}
 
 
 def app():
@@ -226,10 +247,10 @@ def view_available_tasks(username):
 
 def pretty_print_task(task):
     i = f"Task ID: {task.task_id}\n"
-    t = f"title: {task.title}\n"
-    d = f"description: {task.description}\n"
-    c = f"compensation: {task.compensation}\n"
-    s = f"period: {task.startdate} to {task.enddate}"
+    t = f"Title: {task.title}\n"
+    d = f"Description: {task.description}\n"
+    c = f"Compensation: {task.compensation}\n"
+    s = f"Period: {task.startdate} to {task.enddate}"
     print()
     print(i+t+d+c+s)
     print()
@@ -255,14 +276,14 @@ def signup_task(username):
 
                 all_data[2] = tasks
                 tasks.to_csv("tasks.csv", index =  False)
-                print(f"you have successfully signed up for task {task_id}\n")
+                print(f"You have successfully signed up for task {task_id}\n")
             else:
-                print("the task ID you have entered is invalid. Please re-enter.\n")
+                print("The task ID you have entered is invalid. Please re-enter.\n")
 
 
 def hirer_program(username):
     while True:
-        input_type = input("[1] To view my task [2] Add new task [3] Logout: ")
+        input_type = input("[1] View all my tasks, [2] Add new task or [3] Logout: ")
         if input_type == "1":
             view_my_tasks(username)
         elif input_type == "2":
@@ -324,7 +345,7 @@ def view_my_tasks(username):
                 print("# No applicants yet. #\n")
                 continue
             else:
-                print(score(my_task))
+                score(my_task)
                 print()
     else:
         print("You have not added any task.\n")
@@ -339,21 +360,40 @@ def score(my_task):
     freelancer_usernames = my_task['freelancer_usernames'].split(',')
     for username in freelancer_usernames:
         user_info = freelancers[freelancers["username"] == username]
-        proficiency_ratings = user_info[['skill_proficiency_1', 'skill_proficiency_2', 'skill_proficiency_3']].sum(axis=1)
+        proficiency_ratings = user_info[['skill_proficiency_1', 'skill_proficiency_2', 'skill_proficiency_3']].sum(axis=1).values[0]
         aggregated_ratings = proficiency_ratings/3
         skills_match = user_info[["skill_1", "skill_2", "skill_3"]].values[0].tolist()
-        keywords = task_type_dict[my_task["task_type"].values[0]]
+        keywords = task_type_dict[my_task["task_type"]]
         score = 0
         for keyword in keywords:
             if keyword in skills_match:
                 score += 1.25
         final_score = (0.5*aggregated_ratings) + (0.5*score)
         final_scores.append(final_score)
-    f = pd.Series(final_scores)
-    n = pd.Series(freelancer_usernames)
-    sorted_index = f.argsort() #get index of highest scores
-    sorted_username = n(sorted_index)
-    top_3 = sorted_username[:3]
-    return freelancers[freelancers["username"].isin(top_3)]
 
+    f = np.array(final_scores)
+    n = np.array(freelancer_usernames)
+    sorted_index = f.argsort()[::-1] #get index of highest scores
+    sorted_username = n[sorted_index]
+
+    print("### These are the recommended candidates: ###\n")
+    for username in sorted_username[:3]:
+        user_info = freelancers[freelancers["username"] == username]
+        pretty_print_freelancer(user_info)
+
+    print("### End of recommendation ###\n")
+
+    # return freelancers[freelancers["username"].isin(top_3)]
+
+
+def pretty_print_freelancer(user_info):
+    u = f"Username: {user_info.username.values[0]}\n"
+    n = f"Name: {user_info.name.values[0]}\n"
+    h = f"Contact Number: {user_info.hp.values[0]}\n"
+    e = f"Email: {user_info.email.values[0]}\n"
+    j = f"Past Experiences: {user_info.job_history_title_1.values[0]}, {user_info.job_history_title_2.values[0]}, {user_info.job_history_title_3.values[0]}\n"
+    l = f"Past Experiences: {user_info.language_1.values[0]}, {user_info.language_2.values[0]}, {user_info.language_3.values[0]}\n"
+    s = f"Past Experiences: {user_info.skill_1.values[0]}, {user_info.skill_2.values[0]}, {user_info.skill_3.values[0]}\n"
+
+    print(u+n+h+e+j+l+s)
 
