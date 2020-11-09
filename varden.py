@@ -46,11 +46,11 @@ def signup_login():
 def login():
     is_authenticated = False
     while not is_authenticated:
-        input_username = input("Enter your username: ")
+        input_username = input("Enter your username (Type '0' to signup): ")
         if input_username == "0":
             return signup()
 
-        input_pw = input("Enter your password: ")
+        input_pw = input("Enter your password (Type '0' to signup): ")
         if input_pw == "0":
             return signup()
 
@@ -58,7 +58,7 @@ def login():
             is_authenticated = True
             print()
         else:
-            print("Your username or password is wrong. Please try again. (Type '0' to signup)")
+            print("Your username or password is wrong. Please try again. (Type [0] to signup)")
 
     return input_username
 
@@ -85,24 +85,26 @@ def signup():
 
 def freelancer_or_hirer():
     while True:
-        input_type = input("[1] Freelancer or [2] Hirer? ")
+        input_type = input("Are you signing up as a [1] Freelancer or [2] Hirer (Type '0' to login):  ")
         if input_type == "1":
             return "freelancer"
         elif input_type == "2":
             return "hirer"
+        elif input_type == "0":
+            return login()
 
 
 def verify_username():
     user_pw = all_data[3]
     while True:
-        input_username = input("Choose a username: ")
+        input_username = input("Choose a username (Type '0' to login): ")
         if input_username == "0":
             return login()
         elif input_username not in user_pw["username"].values:
             return input_username
 
         else:
-            print("Username is taken. Please input another username (Type '0' to signup).")
+            print("Username is taken. Please input another username (Type [0] to signup).")
 
 
 def hirer_signup(username):
@@ -333,12 +335,11 @@ def score(my_task):
     freelancers = all_data[1]
     tasks = all_data[2]
 
-
     final_scores = []
-    freelancer_usernames = tasks["freelancer_usernames"].str.split(",")[0]
-    for user in freelancer_usernames:
-        user_info = freelancers[freelancers["username"] == user]
-        proficiency_ratings = user_info["skill_proficiency_1"] + user_info["skill_proficiency_2"] + user_info["skill_proficiency_3"]
+    freelancer_usernames = my_task['freelancer_usernames'].split(',')
+    for username in freelancer_usernames:
+        user_info = freelancers[freelancers["username"] == username]
+        proficiency_ratings = user_info[['skill_proficiency_1', 'skill_proficiency_2', 'skill_proficiency_3']].sum(axis=1)
         aggregated_ratings = proficiency_ratings/3
         skills_match = user_info[["skill_1", "skill_2", "skill_3"]].values[0].tolist()
         keywords = task_type_dict[my_task["task_type"].values[0]]
