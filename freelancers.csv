@@ -1,4 +1,5 @@
 username,name ,age,address,hp,email,education,job_history_title_1,job_history_position_1,job_history_tenure_1,job_history_title_2,job_history_position_2,job_history_tenure_2,job_history_title_3,job_history_position_3,job_history_tenure_3,skill_1,skill_proficiency_1,skill_2,skill_proficiency_2,skill_3,skill_proficiency_3,language_1,language_proficiecy_1,language_2,language_proficiecy_2,language_3,language_proficiency_3,applications
-dsaf,f,sad,fsa,df,sa,df,sda,fs,adf,sda,f,sda,f,asd,f,asd,f,asd,f,sad,f,fdas,daf,fdas,fasd,dsaf,fdsa,
-asdf,as,df,asd,f,sad,f,asd,f,sad,f,asdf,asd,f,sad,f,sda,f,sad,f,asd,fsd,af,asd,dsfa,fdsa,fdas,fas,
-asd,f,asd,f,asdg,hsdfs,g,,asf,asd,fasd,f,as,df,sa,df,sad,f,sad,sdaf,sad,f,as,f,dsa,f,sd,fsad,
+Keith,Keith,15,bishan,999,keithwang@gmail.com,NTU,cleaner,junior,1,,,,,,,cleaning,5,laundry,5,5,5,english,5,chinese,5,,,
+chester,chester,15,kovan,999,123@gmail.com,NUS,baker,chef,2,,,,,,,packing,1,vacuuming,3,ironing,3,english,5,chinese,4,indian,5,
+daniel,daniel,15,asdf,asdf,asdff,NUS,drug dealer,head,5,,,,,,,gardening,5,plumbing,1,cooking,1,english,2,chinese,5,,,
+varden,vardentoh,50,amk,996,varden@gmail.com,NUS,Occifer,colonel,10,,,,,,,copywriting,3,cleaning,3,electrical,1,english,5,malay,5,chinese,5,
