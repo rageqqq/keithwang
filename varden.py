@@ -4,7 +4,7 @@ import numpy as np
 hirers = pd.read_csv("hirers.csv", dtype={'my_tasks_ids': 'object'})
 freelancers = pd.read_csv("freelancers.csv", dtype={'freelancer_usernames': 'object'})
 tasks = pd.read_csv("tasks.csv", dtype={'task_id': 'object'})
-user_pw = pd.read_csv("username_password.csv")
+user_pw = pd.read_csv("username_password.csv", dtype={'password': 'object'})
 
 all_data = [hirers, freelancers, tasks, user_pw]
 
